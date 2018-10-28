@@ -10,6 +10,7 @@ modalBackground.addEventListener('click', function (event) {
 function showModal() {
     modal.classList.remove('hidden');
     modalBackground.classList.remove('hidden');
+    removeExitPopupEventListener();
 }
 
 function hideModal() {
@@ -17,20 +18,30 @@ function hideModal() {
     modalBackground.classList.add('hidden');
 }
 
-function addExitPopupEventListener() {
-    window.document.addEventListener('mouseleave', function (event) {
-        var modalShown = !!modal.dataset.shown;
-        if (modalShown) {
-            return;
-        }
+function beforeUnloadCallback(event) {
+    var event = event || window.event;
+    var message = '';
 
-        modal.dataset.shown = true;
-        showModal();
-    });
+    event.preventDefault();
+    showModal();
+
+    if (event) {
+        event.returnValue = message; // for IE/Firefox
+    }
+
+    return message; // for Safari/Chrome
 }
 
-//window.onbeforeunload = function (event) {
-//    event.preventDefault();
-//    event.returnValue = 'Where are you going?';
-//    return;
-//};
+function mouseLeaveCallback(event) {
+    showModal();
+}
+
+function addExitPopupEventListener() {
+    window.addEventListener('beforeunload', beforeUnloadCallback);
+    window.document.addEventListener('mouseleave', mouseLeaveCallback);
+}
+
+function removeExitPopupEventListener() {
+    window.removeEventListener('beforeunload', beforeUnloadCallback);
+    window.document.removeEventListener('mouseleave', mouseLeaveCallback);
+}
