@@ -1,3 +1,4 @@
+var googleLink = document.getElementById('google-link');
 var modal = document.getElementById('my-modal');
 var modalBackground = document.getElementById('modal-background');
 
@@ -36,12 +37,20 @@ function mouseLeaveCallback(event) {
     showModal();
 }
 
+function googleLinkClickCallback(event) {
+    var event = event || window.event;
+    event.preventDefault();
+    showModal();
+}
+
 function addExitPopupEventListener() {
     window.addEventListener('beforeunload', beforeUnloadCallback);
     window.document.addEventListener('mouseleave', mouseLeaveCallback);
+    googleLink.addEventListener('click', googleLinkClickCallback);
 }
 
 function removeExitPopupEventListener() {
     window.removeEventListener('beforeunload', beforeUnloadCallback);
     window.document.removeEventListener('mouseleave', mouseLeaveCallback);
+    googleLink.removeEventListener('click', googleLinkClickCallback);
 }
